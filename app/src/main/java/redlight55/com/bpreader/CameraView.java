@@ -28,7 +28,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         super(context);
 
         mCamera = camera;
-        mCamera.setDisplayOrientation(90);
+        mCamera.setDisplayOrientation(0);
         mHolder = getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
@@ -46,12 +46,22 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     }
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
+
+        if(mHolder.getSurface() == null)
+            return;
+        try{
+            mCamera.stopPreview();
+        }catch(Exception e) {
+
+        }
         try {
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
         } catch (IOException e) {
             Log.d("ERROR","Camera error on SurfaceChanged" + e.getMessage());
         }
+
+
     }
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
