@@ -21,17 +21,13 @@ import java.io.IOException;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
 
-    private SurfaceHolder mHolder;
     private Camera mCamera;
 
     public CameraView(Context context, Camera camera){
         super(context);
 
         mCamera = camera;
-        mCamera.setDisplayOrientation(0);
-        mHolder = getHolder();
-        mHolder.addCallback(this);
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
+        mCamera.setDisplayOrientation(90); // 90 gives my phone portrait (victor)
     }
 
     @Override
@@ -44,28 +40,21 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         }
 
     }
+
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
-
-        if(mHolder.getSurface() == null)
-            return;
-        try{
-            mCamera.stopPreview();
-        }catch(Exception e) {
-
-        }
-        try {
-            mCamera.setPreviewDisplay(mHolder);
-            mCamera.startPreview();
-        } catch (IOException e) {
-            Log.d("ERROR","Camera error on SurfaceChanged" + e.getMessage());
-        }
-
-
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Camera.Parameters parameters = mCamera.getParameters();
+        mCamera.setParameters(parameters);
+        mCamera.startPreview();
     }
+
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        // Do nothing
+
+        /*  CRASH on re-running app
         mCamera.stopPreview();
-        mCamera.release();
+        mCamera.release()
+        */
     }
 }
