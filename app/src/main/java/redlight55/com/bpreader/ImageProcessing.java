@@ -77,4 +77,30 @@ public abstract class ImageProcessing {
 
     }
 
+    public static int[] getUVfromYUV420(byte[] yuv420sp, int width, int height){
+
+        if (yuv420sp == null)
+            return new int[]{0};
+
+        int uv[] = {0,0};
+
+        final int frameSize = width * height;
+
+        for (int j = 0, yp = 0; j < height; j++)
+        {
+            int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
+
+            for (int i = 0; i < width; i++, yp++)
+            {
+                if ((i & 1) == 0) {
+                    v = (0xff & yuv420sp[uvp++]) - 128;
+                    u = (0xff & yuv420sp[uvp++]) - 128;
+
+                    uv[0] += u;
+                    uv[1] += v;
+                }
+            }
+        }
+        return uv;
+    }
 }

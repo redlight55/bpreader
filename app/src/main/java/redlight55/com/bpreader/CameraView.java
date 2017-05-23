@@ -102,11 +102,30 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         int width = size.width;
         int height = size.height;
 
-        int imgAvg = ImageProcessing.decodeYUV420SPtoRedAvg(data.clone(), height, width);
+/*
+        byte[] luma = new byte[width * height];
+        byte[] chroma = new byte[width * height / 2];
+
+        System.arraycopy(data, 0, luma, 0, width * height);
+        System.arraycopy(data, width*height, chroma, 0, width * height / 2);
+
+        int Y_at_x_y = luma[x + y*width];           // or data[x + y*w]
+        int U_at_x_y = chroma[x/2 + y*width/2 + 1]; // or data[w*h + x/2 + y*w/2 + 1]
+        int V_at_x_y = chroma[x/2 + y*width/2];     // or data[w*h + x/2 + y*w/2]
+*/
+
+        int uv[] = ImageProcessing.getUVfromYUV420(data.clone(), width, height);
+        int imgAvg = ImageProcessing.decodeYUV420SPtoRedAvg(data.clone(), width, height);
 
         TextView valueOfY = (TextView)getRootView().findViewById(R.id.valueY);
-        valueY = imgAvg;
-        valueOfY.setText(String.valueOf(valueY));
+        TextView valueOfU = (TextView)getRootView().findViewById(R.id.valueU);
+        TextView valueOfV = (TextView)getRootView().findViewById(R.id.valueV);
+
+        //valueY = imgAvg;
+        //valueOfY.setText(String.valueOf(valueY));
+        valueOfY.setText(String.valueOf(imgAvg));
+        valueOfU.setText(String.valueOf(uv[0]));
+        valueOfV.setText(String.valueOf(uv[1]));
 
         if(imgAvg == 0 || imgAvg == 255){
             processing.set(false);
