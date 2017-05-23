@@ -62,7 +62,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
     private static final int[] beatsArray = new int[beatsArraySize];
     private static double beats = 0;
     private static long startTime = 0;
-    private static int valueY = 0;
+    //public static int imgAvgTest = 0; //pass to MainActivity
 
     public CameraView(Context context, Camera camera){
         super(context);
@@ -71,19 +71,14 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
         mCamera = camera;
 
-        mCamera.setDisplayOrientation(270);
+        mCamera.setDisplayOrientation(270); // victor's default orientation does not need this line
         mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
         for(Camera.Size str: mSupportedPreviewSizes)
             Log.e(TAG, str.width + "/" + str.height);
 
-
-
         mHolder = getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
-
-
-
     }
 
     @Override
@@ -116,6 +111,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
         int uv[] = ImageProcessing.getUVfromYUV420(data.clone(), width, height);
         int imgAvg = ImageProcessing.decodeYUV420SPtoRedAvg(data.clone(), width, height);
+        //imgAvgTest = imgAvg;  pass to MainActivity
 
         TextView valueOfY = (TextView)getRootView().findViewById(R.id.valueY);
         TextView valueOfU = (TextView)getRootView().findViewById(R.id.valueU);
@@ -243,7 +239,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         try{
             mCamera.stopPreview();
         }catch(Exception e) {
-
+            // nothing
         }
         try {
             Camera.Parameters parameters = mCamera.getParameters();
@@ -285,22 +281,17 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             mCamera.startPreview();
 
             //startTime = System.currentTimeMillis();
-
-
-
         } catch (IOException e) {
             Log.d("ERROR","Camera error on SurfaceChanged" + e.getMessage());
         }
-
-
     }
 
 
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        mCamera.stopPreview();
-      //  mCamera.release();
+        //mCamera.stopPreview();  removed for pause&resume
+        //mCamera.release();
     }
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h){
@@ -335,4 +326,27 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         return optimalSize;
     }
 
+
+    public void onResume() {
+        if (mCamera == null)
+            mCamera = Camera.open();
+
+        try {
+            mCamera.setPreviewDisplay(mHolder);
+            mCamera.setPreviewCallback(this);
+            mCamera.startPreview();
+        } catch (Exception e) {
+            // nothing
+        }
+
+        startTime = System.currentTimeMillis();
+    }
+
+    public void onPause() {
+        mCamera.setPreviewCallback(null);
+        //surfaceView.getHolder().removeCallback(cameraView);
+        mCamera.stopPreview();
+        //mCamera.release(); removed for pause&resume
+        //mCamera = null; removed for pause&resume
+    }
 }

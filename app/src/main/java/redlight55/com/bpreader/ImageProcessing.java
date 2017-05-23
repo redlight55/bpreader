@@ -86,11 +86,11 @@ public abstract class ImageProcessing {
 
         final int frameSize = width * height;
 
-        for (int j = 0, yp = 0; j < height; j++)
+        for (int j = 0; j < height; j++)
         {
             int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
 
-            for (int i = 0; i < width; i++, yp++)
+            for (int i = 0; i < width; i++)
             {
                 if ((i & 1) == 0) {
                     v = (0xff & yuv420sp[uvp++]) - 128;

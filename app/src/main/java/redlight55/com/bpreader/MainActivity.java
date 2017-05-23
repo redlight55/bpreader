@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout camera_view;
     private Button btnS;
     private TextView txtTime;
+    int x = 0;
+    //int imgAvg = 0;   // pass imgAvg from CameraView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,33 +54,40 @@ public class MainActivity extends AppCompatActivity {
         btnS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnS.setEnabled(false);
 
-
-
-                if (camera != null) {
+                if (camera != null && x == 0) {
+                    x = 1;
                     image = new CameraView(MainActivity.this, camera);
-                    camera_view = (FrameLayout) findViewById(R.id.camera_view);
+                    camera_view.removeAllViews();
                     camera_view.addView(image);
                 }
 
+                if (x == 1) {
+                    camera_view.removeAllViews();
+                    camera_view.addView(image);
+                }
 
-
+                image.onResume();
 
                 new CountDownTimer(30000, 1000) {
-
+                //new CountDownTimer(5000, 1000) {
+                    // 5000 is for testing
                     public void onTick(long millisUntilFinished) {
+                        //imgAvg = CameraView.imgAvgTest;   // pass imgAvg
+                        //txtTime.setText(Integer.toString(imgAvg));    // pass imgAvg
                         txtTime.setText("Time remaining: " + millisUntilFinished / 1000);
                     }
-
                     public void onFinish() {
                         txtTime.setText("Done!");
+                        image.onPause();
+                        camera_view.removeAllViews();
+                        camera_view.addView(imagewithoutip);
+                        btnS.setEnabled(true);
                     }
                 }.start();
-
             }
         });
-
-
 
         ImageButton imgClose = (ImageButton) findViewById(R.id.imgClose);
         imgClose.setOnClickListener(new View.OnClickListener() {
@@ -88,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
 
     @Override
     protected void onPostResume() {
