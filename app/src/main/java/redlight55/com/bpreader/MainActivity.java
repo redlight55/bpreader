@@ -1,27 +1,21 @@
 package redlight55.com.bpreader;
 
-import android.os.SystemClock;
+import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 //import android.hardware.camera2.CameraManager;
-import android.content.Context;
 import android.hardware.Camera;
-import android.hardware.Camera.PreviewCallback;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private static SurfaceHolder previewHolder = null;
     private static Camera camera = null;
     private CameraView image = null;
+    private CameraViewWithoutIP imagewithoutip = null;
+    private FrameLayout camera_view;
+    private Button btnS;
+    private TextView txtTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +36,49 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        btnS = (Button) findViewById(R.id.btnStart);
+        txtTime = (TextView) findViewById(R.id.txtcount);
+
         try {
             camera = Camera.open();
         } catch (Exception e) {
             Log.d("ERROR", "Failed to get camera: " + e.getMessage());
         }
 
-        if (camera != null) {
-            image = new CameraView(this, camera);
-            FrameLayout camera_view = (FrameLayout) findViewById(R.id.camera_view);
-            camera_view.addView(image);
-        }
+        imagewithoutip = new CameraViewWithoutIP(this, camera);
+        camera_view = (FrameLayout) findViewById(R.id.camera_view);
+        camera_view.addView(imagewithoutip);
+
+        btnS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                if (camera != null) {
+                    image = new CameraView(MainActivity.this, camera);
+                    camera_view = (FrameLayout) findViewById(R.id.camera_view);
+                    camera_view.addView(image);
+                }
+
+
+
+
+                new CountDownTimer(30000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        txtTime.setText("Time remaining: " + millisUntilFinished / 1000);
+                    }
+
+                    public void onFinish() {
+                        txtTime.setText("Done!");
+                    }
+                }.start();
+
+            }
+        });
+
+
 
         ImageButton imgClose = (ImageButton) findViewById(R.id.imgClose);
         imgClose.setOnClickListener(new View.OnClickListener() {
@@ -57,5 +87,18 @@ public class MainActivity extends AppCompatActivity {
                 System.exit(0);
             }
         });
+    }
+
+
+
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
     }
 }

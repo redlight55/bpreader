@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BPReader.iml" filepath="$PROJECT_DIR$/BPReader.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bpreader.iml" filepath="$PROJECT_DIR$/bpreader.iml" />
     </modules>
   </component>
 </project>

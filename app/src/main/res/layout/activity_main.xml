@@ -148,4 +148,22 @@
         android:layout_alignStart="@+id/valueU"
         android:layout_alignTop="@+id/textView17" />
 
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textHeartRate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="Start" />
+
+    <TextView
+        android:id="@+id/txtcount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnStart"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="41dp"
+        android:textSize="30sp" />
+
 </RelativeLayout>

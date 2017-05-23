@@ -86,7 +86,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     }
 
-    //@Override
+    @Override
     public void onPreviewFrame(byte[] data, Camera cam){
         if (data == null)
             throw new NullPointerException();
@@ -281,7 +281,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         mCamera.stopPreview();
-        mCamera.release();
+      //  mCamera.release();
     }
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h){
